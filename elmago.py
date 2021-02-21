@@ -1,12 +1,13 @@
 import cryptography
 from cryptography.fernet import Fernet
-
+from sympy.crypto.crypto import encipher_hill, decipher_hill
+from sympy import Matrix
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES, PKCS1_OAEP
+import random
 import base64
 import os
-
 
 # generar key solamente en un archivo
 def generateKeyWithoutPassword(keyName):
@@ -60,7 +61,7 @@ def menu():
     print("\t 3 - Encriptacion Asimetrica")
     print("\t 4 - Desencriptacion Asimetrica")
     print("\t 5 - Cifrado por Matrices")
-    print("\t 6 - Cifrado por Matrices")
+    print("\t 6 - Descifrado por Matrices")
     selection = input("\n -->: ")
     return int(selection)
 
@@ -78,6 +79,9 @@ def generatePublicAndPrivateKeys():
         f.write(public_key)
         f.close()
 
+def generateMatrix():
+    matrix = [[random.randint(0,27) for i in range(4)] for j in range(4)]
+    print(matrix)
 
 def encryptionMethodAsymetric(fileName):
     try:
@@ -114,6 +118,9 @@ def decryptionMethodAsymetric(file, llave):
         print('Archivo desencriptado exitosamente!')
     except ValueError as e:
         print("Error Tecnico: " + str(e))
+
+def encriptionMethodMatrix(file):
+    generateMatrix()
 
 def main():
     opt  = menu()
@@ -153,6 +160,13 @@ def main():
             file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
             llave = input("\nIngrese la llave privada para desencriptar el archivo incluyendo la extension: ")
             decryptionMethodAsymetric(file, llave)
+        except ValueError as e:
+            print(e)
+
+    if opt == 5:
+        try:
+            file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
+            encriptionMethodMatrix(file)
         except ValueError as e:
             print(e)
     return True
