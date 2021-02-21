@@ -92,7 +92,7 @@ def generateMatrix():
     while(True):
         matrix = [[random.randint(0,24) for i in range(4)] for j in range(4)]
         if(verifyInv(matrix)):
-            return Matrix(matrix)
+            return matrix
 
 def encryptionMethodAsymetric(fileName):
     try:
@@ -130,18 +130,41 @@ def decryptionMethodAsymetric(file, llave):
     except ValueError as e:
         print("Error Tecnico: " + str(e))
 
-def encriptionMethodMatrix(file):
+def encryptionMethodMatrix(file):
     try:
         with open(file, 'r') as fn:
             msg = fn.read()
             fn.close()
-        key = generateMatrix()
+        matrix = generateMatrix()
+        key = Matrix(matrix)
         msgE = encipher_hill(msg,key)
-        print(msgE)
-        print(decipher_hill(msgE,key))
 
+        with open(file,'w') as fn:
+            fn.write(msgE)
+            fn.close()
+        with open('private.key','w') as fn:
+            matrix = [" ".join([str(num) for num in i])+"\n" for i in matrix]
+            fn.writelines(matrix)
+            fn.close()
+        print("Archivo encriptado exitosamente. Protege la llave secreta private.key !!")
     except ValueError as e:
-        print(e)
+        print("Error Técnico: "+str(e))
+
+def decryprionMethodMatrix(file, key):
+    try:
+        with open(file, 'r') as fn:
+            msg = fn.read()
+            fn.close()
+        with open(key, 'r') as fn:
+            matrix = Matrix([[int(num) for num in line.rstrip("\n").split(" ")] for line in fn.readlines()])
+            fn.close()
+        archivo_desencriptado = decipher_hill(msg,matrix)
+        with open(file,'w') as fn:
+            fn.write(archivo_desencriptado)
+
+        print('Archivo desencriptado exitosamente!')
+    except ValueError as e:
+        print("Error Tecnico: " + str(e))
 
 def main():
     opt  = menu()
@@ -187,7 +210,16 @@ def main():
     if opt == 5:
         try:
             file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
-            encriptionMethodMatrix(file)
+            encryptionMethodMatrix(file)
+        except ValueError as e:
+            print(e)
+    if opt == 6:
+        try:
+            file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
+            key = input("\nIngrese el nombre de su llave incluyendo la extension: ")
+            decryprionMethodMatrix(file,key)
+            print("\nArchivo desencriptado satisfactoriamente.")
+
         except ValueError as e:
             print(e)
     return True
