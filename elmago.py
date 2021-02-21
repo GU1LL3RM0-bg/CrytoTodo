@@ -1,3 +1,4 @@
+import numpy as np
 import cryptography
 from cryptography.fernet import Fernet
 from sympy.crypto.crypto import encipher_hill, decipher_hill
@@ -79,9 +80,19 @@ def generatePublicAndPrivateKeys():
         f.write(public_key)
         f.close()
 
+def verifyInv(matrix):
+    matrix = np.array(matrix)
+    try:
+        np.linalg.inv(matrix)
+        return 1
+    except ValueError as e:
+        return 0
+
 def generateMatrix():
-    matrix = [[random.randint(0,27) for i in range(4)] for j in range(4)]
-    print(matrix)
+    while(True):
+        matrix = [[random.randint(0,27) for i in range(4)] for j in range(4)]
+        if(verifyInv(matrix)):
+            return Matrix(matrix)
 
 def encryptionMethodAsymetric(fileName):
     try:
