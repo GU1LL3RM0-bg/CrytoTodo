@@ -63,6 +63,7 @@ def menu():
     print("\t 4 - Desencriptacion Asimetrica")
     print("\t 5 - Cifrado por Matrices")
     print("\t 6 - Descifrado por Matrices")
+    print("\t 7 - Salir del programa")
     selection = input("\n -->: ")
     return int(selection)
 
@@ -222,10 +223,15 @@ def main():
 
         except ValueError as e:
             print(e)
+
+    if opt == 7:
+        return False
+
     return True
 if __name__ == '__main__':
     ok = True
     while ok:
         ok = main()
-        input("\n\nPress Entero to continue")
+        if(not ok): break
+        input("\n\nPress Enter to continue")
         os.system("cls")
