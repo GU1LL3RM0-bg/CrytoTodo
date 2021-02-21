@@ -131,23 +131,32 @@ def decryptionMethodAsymetric(file, llave):
     except ValueError as e:
         print("Error Tecnico: " + str(e))
 
-def encryptionMethodMatrix(file):
+def readMatrixFile(file):
+    try:
+        with open(file,'r') as fn:
+            matrix = Matrix([[int(num) for num in line.rstrip("\n").split(" ")] for line in fn.readlines()])
+            fn.close()
+        return matrix
+    except ValueError as e:
+        print("Error al abrir archivo con la clave")
+
+def encryptionMethodMatrix(file, matrix,status=0):
     try:
         with open(file, 'r') as fn:
             msg = fn.read()
             fn.close()
-        matrix = generateMatrix()
         key = Matrix(matrix)
         msgE = encipher_hill(msg,key)
 
         with open(file,'w') as fn:
             fn.write(msgE)
             fn.close()
-        with open('private.key','w') as fn:
-            matrix = [" ".join([str(num) for num in i])+"\n" for i in matrix]
-            fn.writelines(matrix)
-            fn.close()
-        print("Archivo encriptado exitosamente. Protege la llave secreta private.key !!")
+        if(not status):
+            with open('private.key','w') as fn:
+                matrix = [" ".join([str(num) for num in i])+"\n" for i in matrix]
+                fn.writelines(matrix)
+                fn.close()
+        print("\nArchivo encriptado exitosamente. Protege la llave secreta private.key !!")
     except ValueError as e:
         print("Error Técnico: "+str(e))
 
@@ -156,9 +165,7 @@ def decryprionMethodMatrix(file, key):
         with open(file, 'r') as fn:
             msg = fn.read()
             fn.close()
-        with open(key, 'r') as fn:
-            matrix = Matrix([[int(num) for num in line.rstrip("\n").split(" ")] for line in fn.readlines()])
-            fn.close()
+        matrix = readMatrixFile(key)
         archivo_desencriptado = decipher_hill(msg,matrix)
         with open(file,'w') as fn:
             fn.write(archivo_desencriptado)
@@ -215,8 +222,17 @@ def main():
 
     if opt == 5:
         try:
+            status = 0;
+            si_no = input("\nDesea generar una llave nueva?... escriba si o no: ")
+            if si_no == "si":
+                key = generateMatrix()
+            else:
+                matrix = input("\nIngrese el nombre de su llave incluyendo la extension: ")
+                key = readMatrixFile(matrix)
+                status = 1
+
             file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
-            encryptionMethodMatrix(file)
+            encryptionMethodMatrix(file,key,status)
         except ValueError as e:
             print(e)
     if opt == 6:
