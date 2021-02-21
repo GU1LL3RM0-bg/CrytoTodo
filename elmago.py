@@ -95,14 +95,17 @@ def generateMatrix():
         if(verifyInv(matrix)):
             return matrix
 
-def encryptionMethodAsymetric(fileName):
+def encryptionMethodAsymetric(fileName, key = ''):
     try:
         with open(fileName, 'rb') as fn:
             archivo = fn.read()
 
         with open(fileName, 'wb') as f:
-            # Public RSA key
-            public_key = RSA.import_key(open('public.pem').read())
+                # Public RSA key
+            if(len(key) <= 1):
+                public_key = RSA.import_key(open(key).read())
+            else:
+                public_key = RSA.import_key(open('public.pem').read())
             # Public encrypter object
             public_crypter =  PKCS1_OAEP.new(public_key)
             # Encrypted fernet key
@@ -207,9 +210,14 @@ def main():
 
     if opt == 3:
         try:
+            si_no = input("\nDesea usar una llave publica ya existente?... escriba si o no: ")
+            if si_no == "si":
+                key = input("\nIngrese el nombre de la llave publica incluyendo la extension: ")
+            else:
+                generatePublicAndPrivateKeys()
+
             file = input("\nIngrese el nombre del archivo a encriptar incluyendo la extension: ")
-            generatePublicAndPrivateKeys()
-            encryptionMethodAsymetric(file)
+            encryptionMethodAsymetric(file,key)
         except ValueError as e:
             print(e)
     if opt == 4:
