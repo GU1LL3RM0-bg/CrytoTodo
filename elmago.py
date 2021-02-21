@@ -163,9 +163,14 @@ def decryprionMethodMatrix(file, key):
         with open(file,'w') as fn:
             fn.write(archivo_desencriptado)
 
-        print('Archivo desencriptado exitosamente!')
     except ValueError as e:
         print("Error Tecnico: " + str(e))
+
+def clear():
+    if(os.name == 'nt'):
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def main():
     opt  = menu()
@@ -234,4 +239,4 @@ if __name__ == '__main__':
         ok = main()
         if(not ok): break
         input("\n\nPress Enter to continue")
-        os.system("cls")
+        clear()
