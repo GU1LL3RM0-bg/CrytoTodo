@@ -81,16 +81,16 @@ def generatePublicAndPrivateKeys():
         f.close()
 
 def verifyInv(matrix):
-    matrix = np.array(matrix)
+    matrix = Matrix(matrix)
     try:
-        np.linalg.inv(matrix)
+        matrix.inv_mod(26)
         return 1
     except ValueError as e:
         return 0
 
 def generateMatrix():
     while(True):
-        matrix = [[random.randint(0,27) for i in range(4)] for j in range(4)]
+        matrix = [[random.randint(0,24) for i in range(4)] for j in range(4)]
         if(verifyInv(matrix)):
             return Matrix(matrix)
 
@@ -131,7 +131,17 @@ def decryptionMethodAsymetric(file, llave):
         print("Error Tecnico: " + str(e))
 
 def encriptionMethodMatrix(file):
-    generateMatrix()
+    try:
+        with open(file, 'r') as fn:
+            msg = fn.read()
+            fn.close()
+        key = generateMatrix()
+        msgE = encipher_hill(msg,key)
+        print(msgE)
+        print(decipher_hill(msgE,key))
+
+    except ValueError as e:
+        print(e)
 
 def main():
     opt  = menu()
