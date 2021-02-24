@@ -103,9 +103,10 @@ def encryptionMethodAsymetric(fileName, key = ''):
         with open(fileName, 'wb') as f:
                 # Public RSA key
             if(len(key) <= 1):
-                public_key = RSA.import_key(open(key).read())
-            else:
                 public_key = RSA.import_key(open('public.pem').read())
+
+            else:
+                public_key = RSA.import_key(open(key).read())
             # Public encrypter object
             public_crypter =  PKCS1_OAEP.new(public_key)
             # Encrypted fernet key
@@ -210,6 +211,7 @@ def main():
 
     if opt == 3:
         try:
+            key =""
             si_no = input("\nDesea usar una llave publica ya existente?... escriba si o no: ")
             if si_no == "si":
                 key = input("\nIngrese el nombre de la llave publica incluyendo la extension: ")
@@ -239,7 +241,7 @@ def main():
                 key = readMatrixFile(matrix)
                 status = 1
 
-            file = input("\nIngrese el nombre del archivo a desencriptar incluyendo la extension: ")
+            file = input("\nIngrese el nombre del archivo a encriptar incluyendo la extension: ")
             encryptionMethodMatrix(file,key,status)
         except ValueError as e:
             print(e)
